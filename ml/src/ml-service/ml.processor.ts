@@ -7,6 +7,7 @@ import { DI } from "../main";
 import config from "../config";
 import { v4 } from "uuid";
 import { GigaChat } from "gigachat-node";
+import { writeFileSync } from "fs";
 
 export const getAnalyze = async (job: Job<GetAnalyzeData, any>) => {
   // console.log(job.data);
@@ -151,20 +152,23 @@ const generateResult = async (message: string) => {
 - Если данных мало — оцени вероятность на основе интервалов и статуса клиента.
     `;
 
-    await gigachat.createToken();
-    console.log("Token OK");
-    const response = await gigachat.completion({
-      model: "GigaChat-2-Pro",
-      messages: [
-        // { role: "system", content: systemPrompt },
-        { role: "user", content: `${systemPrompt} ${message}` },
-      ],
-    });
-    const data = JSON.parse(
-      response.choices[0].message.content.replace(/```json|```/g, "").trim()
-    );
+    // await gigachat.createToken();
+    // console.log("Token OK");
+    // const response = await gigachat.completion({
+    //   model: "GigaChat-2-Pro",
+    //   messages: [
+    //     // { role: "system", content: systemPrompt },
+    //     { role: "user", content: `${systemPrompt} ${message}` },
+    //   ],
+    // });
+    // console.log(response.choices[0].message);
+    // const data = JSON.parse(
+    //   response.choices[0].message.content.replace(/```json|```/g, "").trim()
+    // );
+    // writeFileSync("mlResponse.json", JSON.stringify(data));
+    // console.log(data);
 
-    return data;
+    // return data;
   } catch (error) {
     throw error;
   }
