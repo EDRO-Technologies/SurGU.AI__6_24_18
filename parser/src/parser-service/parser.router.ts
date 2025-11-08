@@ -1,5 +1,3 @@
-import type { GetAnalyzeData } from "./types/analyze.types";
-
 import { DI } from "../main";
 import { forceStart } from "./parser.processor";
 
