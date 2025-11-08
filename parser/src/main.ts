@@ -26,7 +26,7 @@ export const init = (async () => {
     redis: redisConnectionOptions,
   });
   DI.parserWorker = new WorkerFactory(
-    "parser",
+    "parserIncome",
     DI.workerRouter.getDynamicProcessor(),
     {
       redis: redisConnectionOptions,
