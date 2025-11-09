@@ -10,39 +10,13 @@ import { GigaChat } from "gigachat-node";
 import { writeFileSync } from "fs";
 
 export const getAnalyze = async (job: Job<GetAnalyzeData, any>) => {
-  // console.log(job.data);
-  // return;
   const message = job.data;
-  // const payload = {
-  //   chatId,
-  //   message,
-  //   stream: false,
-  // };
-
-  // const response = await axios.post(config.external.chat.url, payload, {
-  //   headers: {
-  //     Authorization: `${config.external.chat.token}`,
-  //     "Content-Type": "application/json",
-  //   },
-  //   timeout: 30000,
-  // });
-
-  // const result = response.data;
   const result = await generateResult(JSON.stringify(message));
-
   DI.mlQueue.addJob("done_analyze", result);
 };
 
 const generateResult = async (message: string) => {
   try {
-    // const gigachat = new GigaChat(
-    //   config.external.chat.token,
-    //   // @ts-ignore
-    //   true,
-    //   true,
-    //   true
-    // );
-
     const gigachat = new GigaChat({
       clientSecretKey: config.external.chat.token,
       isIgnoreTSL: true,
@@ -152,6 +126,7 @@ const generateResult = async (message: string) => {
 - Если данных мало — оцени вероятность на основе интервалов и статуса клиента.
     `;
 
+    console.log(message);
     // await gigachat.createToken();
     // console.log("Token OK");
     // const response = await gigachat.completion({

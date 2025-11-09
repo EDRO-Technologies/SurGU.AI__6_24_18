@@ -1,34 +1,17 @@
-import { eq, sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 
 import { db } from '@/db/drizzle/connect';
-import { clients, sales } from '@/db/drizzle/schema/lead/lead.schema';
+import { clients } from '@/db/drizzle/schema/lead/lead.schema';
 
-export const getAll = async () => {
+export const getAllLatest = async () => {
   try {
-    const result = await db
-      .select({
-        name: clients.name,
-        phone: clients.phone,
-        companyName: clients.companyName,
-        email: clients.email,
-        percentageOfAgreement: clients.percentageOfAgreement,
-        sales: sql`
-            COALESCE(
-                jsonb_agg(
-                    jsob_build_object(
-                    'status', ${sales.status},
-                    'price', ${sales.price},
-                    'reasonOfRefusal', ${sales.reasonOfRefusal},
-                    'createDate', ${sales.createDate},
-                    )
-                )
-            )
-        `
-      })
-      .from(clients)
-      .leftJoin(sales, eq(clients.uid, sales.clientId));
+    const result = await db.execute(sql`
+      SELECT DISTINCT ON (client_id) *
+      FROM ${clients}
+      ORDER BY client_id, created_at DESC
+    `);
 
-    return result;
+    return result.rows;
   } catch (error) {
     throw error;
   }

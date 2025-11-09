@@ -5,9 +5,9 @@ import { HttpStatus } from '@/utils/enums/http-status';
 
 import * as LeadService from './lead.service';
 
-export async function getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function getAllLatest(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const result = await LeadService.getAll();
+    const result = await LeadService.getAllLatest();
     sendResponse(res, HttpStatus.OK, result);
   } catch (error) {
     next(error);

@@ -1,37 +1,23 @@
-import { date, integer, pgTable, text, unique, uuid } from 'drizzle-orm/pg-core';
+import { integer, jsonb, pgTable, real, text } from 'drizzle-orm/pg-core';
 
 import { baseSchema } from '../base.schema';
 
-export const clients = pgTable(
-  'clients',
-  {
-    ...baseSchema,
-    name: text('name').notNull(),
-    phone: text('phone'),
-    companyName: text('company_name'),
-    email: text('email'),
-    percentageOfAgreement: integer('percentage_of_agreement').default(0)
-  },
-  (table) => ({
-    clientsPhoneUnique: unique('clients_phone_unique').on(table.phone),
-    clientsEmailUnique: unique('clients_email_unique').on(table.email)
-  })
-);
+export const clients = pgTable('clients', {
+  ...baseSchema,
+
+  clientId: integer('client_id').unique().notNull(),
+  firstName: text('first_name').notNull(),
+  lastName: text('last_name').notNull(),
+  phoneNumber: text('phone_number'),
+  email: text('email'),
+  features: jsonb('features').$type<{
+    seasonality_pattern: string;
+    preferred_categories: string[];
+  }>(),
+  purchaseProbability: real('purchase_probability').default(0),
+  keyFactors: jsonb('key_factors').$type<string[]>(),
+  recommendationText: text('recommendation_text')
+});
 
 export type InsertClient = typeof clients.$inferInsert;
 export type SelectClient = typeof clients.$inferSelect;
-
-export const sales = pgTable('sales', {
-  ...baseSchema,
-  clientId: uuid('client_id')
-    .references(() => clients.uid, { onDelete: 'cascade' })
-    .notNull(),
-  status: text('status').notNull(),
-  name: text('name').notNull(),
-  price: integer('price').notNull(),
-  reasonOfRefusal: text('reason_of_refusal'),
-  createDate: date('create_date').defaultNow().notNull()
-});
-
-export type InsertSale = typeof sales.$inferInsert;
-export type SelectSale = typeof sales.$inferSelect;
