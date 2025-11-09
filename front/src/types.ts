@@ -16,6 +16,7 @@ export interface Customer {
   purchases: Purchase[];
   recommendation_text: string;
   features: {
+    avg_check?: number;
     seasonality_pattern: string,
     preferred_categories: string[]
   },

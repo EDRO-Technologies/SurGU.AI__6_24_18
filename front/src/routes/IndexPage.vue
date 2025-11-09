@@ -5,6 +5,7 @@ import { nextTick, ref } from 'vue';
 import type { Customer } from '@/types';
 
 import { mockCustomers } from '@/mockCustomers';
+import { mockCustomers2 } from '@/mockCustomers2';
 
 function normalizeCustomers(customers: Customer[]) {
   return customers.map((customer) => ({
@@ -48,6 +49,16 @@ const formatCurrency = (value) => {
   return value.toLocaleString('ru-RU', { style: 'currency', currency: 'RUB' });
 };
 
+const loading = ref(false);
+
+function refreshData() {
+  loading.value = true;
+  setTimeout(() => {
+    customers.value = normalizeCustomers(mockCustomers2);
+    loading.value = false;
+  }, 893);
+}
+
 const periods = [
   { name: 'Последние 3 месяца', code: 0 },
   { name: 'Последние 6 месяцев', code: 1 },
@@ -68,13 +79,23 @@ const selectedPeriod = ref(periods[0]);
       striped-rows
       sort-field="chance" :sort-order="1"
       style="margin-top: 60px;"
+      :loading="loading"
     >
       <template #header>
-        <div class="card flex justify-center">
+        <div class="table-header">
           <Select
             v-model="selectedPeriod"
             :options="periods" option-label="name" placeholder="Select a City"
             style="width: 240px;"
+          />
+
+          <Button
+            type="button"
+            severity="secondary"
+            rounded
+            label="Обновить данные"
+            style="margin-left: auto;"
+            @click="refreshData"
           />
         </div>
       </template>
@@ -158,5 +179,11 @@ const selectedPeriod = ref(periods[0]);
 main {
   max-width: 1280px;
   margin: 0 auto;
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 </style>
