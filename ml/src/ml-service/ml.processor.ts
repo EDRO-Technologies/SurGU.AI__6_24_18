@@ -1,14 +1,9 @@
 import type { Job } from "bullmq";
 
-import axios from "axios";
-
 import type { GetAnalyzeData } from "./types/analyze.types";
 import { DI } from "../main";
 import config from "../config";
-import { v4 } from "uuid";
 import { GigaChat } from "gigachat-node";
-import { writeFileSync } from "fs";
-import mlResponseTest from "../../mlResponse.json";
 
 export const getAnalyze = async (job: Job<GetAnalyzeData, any>) => {
     const message = job.data;
@@ -127,25 +122,22 @@ const generateResult = async (message: string) => {
 - Если данных мало — оцени вероятность на основе интервалов и статуса клиента.
     `;
 
-        // console.log(message);
-        // await gigachat.createToken();
-        // console.log("Token OK");
-        // const response = await gigachat.completion({
-        //     model: "GigaChat-2-Pro",
-        //     messages: [
-        //         // { role: "system", content: systemPrompt },
-        //         { role: "user", content: `${systemPrompt} ${message}` },
-        //     ],
-        // });
-        // console.log(response.choices[0].message);
-        // const data = JSON.parse(
-        //     response.choices[0].message.content
-        //         .replace(/```json|```/g, "")
-        //         .trim()
-        // );
-        // console.log(data);
+        await gigachat.createToken();
+        const response = await gigachat.completion({
+            model: "GigaChat-2-Pro",
+            messages: [
+                // { role: "system", content: systemPrompt },
+                { role: "user", content: `${systemPrompt} ${message}` },
+            ],
+        });
+        const data = JSON.parse(
+            response.choices[0].message.content
+                .replace(/```json|```/g, "")
+                .trim()
+        );
 
-        return mlResponseTest;
+        return data;
+        // return mlResponseTest;
     } catch (error) {
         throw error;
     }
