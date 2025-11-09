@@ -4,11 +4,12 @@ import { db } from '@/db/drizzle/connect';
 import { clients } from '@/db/drizzle/schema/lead/schema';
 
 import type { MlResponse } from './types/lead.types';
+import { logger } from '@/lib/loger';
 
 export const processMlResponse = async (job: Job<MlResponse[], any>) => {
   try {
     const data = job.data;
-    console.log(`Получено ${data.length} записей от ML`);
+    logger.info(`Получено ${data.length} записей от ML-SERVICE`);
     const dataToUpsert = [];
 
     data.map(async (client) => {
@@ -27,9 +28,9 @@ export const processMlResponse = async (job: Job<MlResponse[], any>) => {
     });
     await db.insert(clients).values(dataToUpsert);
 
-    console.log('Обработка ML-ответа завершена успешно');
+    logger.info('Обработка ответа завершена успешно');
   } catch (error) {
-    console.error('Ошибка при обработке ML-ответа:', error);
+    logger.error('Ошибка при обработке ответа:', error);
     throw error;
   }
 };
