@@ -127,25 +127,25 @@ const generateResult = async (message: string) => {
 - Если данных мало — оцени вероятность на основе интервалов и статуса клиента.
     `;
 
-        console.log(message);
-        await gigachat.createToken();
-        console.log("Token OK");
-        const response = await gigachat.completion({
-            model: "GigaChat-2-Pro",
-            messages: [
-                // { role: "system", content: systemPrompt },
-                { role: "user", content: `${systemPrompt} ${message}` },
-            ],
-        });
-        console.log(response.choices[0].message);
-        const data = JSON.parse(
-            response.choices[0].message.content
-                .replace(/```json|```/g, "")
-                .trim()
-        );
-        console.log(data);
+        // console.log(message);
+        // await gigachat.createToken();
+        // console.log("Token OK");
+        // const response = await gigachat.completion({
+        //     model: "GigaChat-2-Pro",
+        //     messages: [
+        //         // { role: "system", content: systemPrompt },
+        //         { role: "user", content: `${systemPrompt} ${message}` },
+        //     ],
+        // });
+        // console.log(response.choices[0].message);
+        // const data = JSON.parse(
+        //     response.choices[0].message.content
+        //         .replace(/```json|```/g, "")
+        //         .trim()
+        // );
+        // console.log(data);
 
-        // return mlResponseTest;
+        return mlResponseTest;
     } catch (error) {
         throw error;
     }

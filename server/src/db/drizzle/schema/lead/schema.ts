@@ -5,7 +5,7 @@ import { baseSchema } from '../base.schema';
 export const clients = pgTable('clients', {
   ...baseSchema,
 
-  clientId: integer('client_id').unique().notNull(),
+  clientId: integer('client_id').notNull(),
   firstName: text('first_name').notNull(),
   lastName: text('last_name').notNull(),
   phoneNumber: text('phone_number'),

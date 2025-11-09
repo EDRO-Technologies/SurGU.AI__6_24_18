@@ -1,7 +1,7 @@
 import { sql } from 'drizzle-orm';
 
 import { db } from '@/db/drizzle/connect';
-import { clients } from '@/db/drizzle/schema/lead/lead.schema';
+import { clients } from '@/db/drizzle/schema/lead/schema';
 
 export const getAllLatest = async () => {
   try {
