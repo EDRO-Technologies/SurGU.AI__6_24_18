@@ -8,23 +8,24 @@ import config from "../config";
 import { v4 } from "uuid";
 import { GigaChat } from "gigachat-node";
 import { writeFileSync } from "fs";
+import mlResponseTest from "../../mlResponse.json";
 
 export const getAnalyze = async (job: Job<GetAnalyzeData, any>) => {
-  const message = job.data;
-  const result = await generateResult(JSON.stringify(message));
-  DI.mlQueue.addJob("done_analyze", result);
+    const message = job.data;
+    const result = await generateResult(JSON.stringify(message));
+    DI.mlQueue.addJob("done_analyze", result);
 };
 
 const generateResult = async (message: string) => {
-  try {
-    const gigachat = new GigaChat({
-      clientSecretKey: config.external.chat.token,
-      isIgnoreTSL: true,
-      isPersonal: true,
-      autoRefreshToken: true,
-    });
+    try {
+        const gigachat = new GigaChat({
+            clientSecretKey: config.external.chat.token,
+            isIgnoreTSL: true,
+            isPersonal: true,
+            autoRefreshToken: true,
+        });
 
-    const systemPrompt = `
+        const systemPrompt = `
     Ты — интеллектуальный аналитический агент, оценивающий вероятность повторной покупки клиента на основе данных из CRM.  
 Ты используешь только логику, анализ последовательностей событий и элементарные математические модели (например: частота покупок, интервалы, средний чек, временные паттерны, сезонность, активность по сделкам, наличие потерь).  
 Ты НЕ должен выдумывать данные, которых нет во входе.
@@ -126,25 +127,26 @@ const generateResult = async (message: string) => {
 - Если данных мало — оцени вероятность на основе интервалов и статуса клиента.
     `;
 
-    console.log(message);
-    // await gigachat.createToken();
-    // console.log("Token OK");
-    // const response = await gigachat.completion({
-    //   model: "GigaChat-2-Pro",
-    //   messages: [
-    //     // { role: "system", content: systemPrompt },
-    //     { role: "user", content: `${systemPrompt} ${message}` },
-    //   ],
-    // });
-    // console.log(response.choices[0].message);
-    // const data = JSON.parse(
-    //   response.choices[0].message.content.replace(/```json|```/g, "").trim()
-    // );
-    // writeFileSync("mlResponse.json", JSON.stringify(data));
-    // console.log(data);
+        console.log(message);
+        await gigachat.createToken();
+        console.log("Token OK");
+        const response = await gigachat.completion({
+            model: "GigaChat-2-Pro",
+            messages: [
+                // { role: "system", content: systemPrompt },
+                { role: "user", content: `${systemPrompt} ${message}` },
+            ],
+        });
+        console.log(response.choices[0].message);
+        const data = JSON.parse(
+            response.choices[0].message.content
+                .replace(/```json|```/g, "")
+                .trim()
+        );
+        console.log(data);
 
-    // return data;
-  } catch (error) {
-    throw error;
-  }
+        // return mlResponseTest;
+    } catch (error) {
+        throw error;
+    }
 };

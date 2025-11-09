@@ -22,6 +22,7 @@ import { processMlResponse } from './modules/lead/lead.processor';
 import swaggerDocument from './swagger.json';
 import { CustomError } from './utils/custom_error';
 import { HttpStatus } from './utils/enums/http-status';
+import { registerWorkers } from './modules/lead/lead.woker.routes';
 
 export const app = express();
 const port = config.app.port;
@@ -106,7 +107,7 @@ export const init = (async () => {
   // const scrapperWorker = new WorkerFactory('parser', DI.workerRouter.getDynamicProcessor(), {
   //   redis: redisConnectionOptions
   // });
-  const mlWorker = new WorkerFactory('ml', DI.workerRouter.getDynamicProcessor(), {
+  const mlWorker = new WorkerFactory('mlResults', DI.workerRouter.getDynamicProcessor(), {
     redis: redisConnectionOptions
   });
 
@@ -117,5 +118,7 @@ export const init = (async () => {
   DI.mlQueue = mlQueue;
   DI.scrapperQueue = scrapperQueue;
   DI.mlWorker = mlWorker;
+
+  registerWorkers();
   // DI.scrapperWorker = mlWorker;
 })();
